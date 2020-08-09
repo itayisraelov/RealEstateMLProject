@@ -46,6 +46,29 @@ normal_features = ['Avg_education_importance',
                    'Political_interest_Total_Score',
                    'Weighted_education_rank']
 
+normal_features_right_features = [
+                   'Avg_monthly_income_all_years',
+                   'Avg_Satisfaction_with_previous_vote',
+                   'Avg_size_per_room',
+                   'Number_of_differnt_parties_voted_for',
+                   'Overall_happiness_score',
+                   'Political_interest_Total_Score',
+                   'Weighted_education_rank']
+
+
+right_feature_set = ["Vote",
+                     "Yearly_IncomeK",
+                     "Number_of_differnt_parties_voted_for",
+                     "Political_interest_Total_Score",
+                     "Avg_Satisfaction_with_previous_vote",
+                     "Avg_monthly_income_all_years",
+                     "Most_Important_Issue",
+                     "Overall_happiness_score",
+                     "Avg_size_per_room",
+                     "Weighted_education_rank"]
+
+uniform_features_right_features = ['Yearly_IncomeK']
+
 uniform_features = ['Avg_government_satisfaction',
                     'Financial_balance_score_(0-1)',
                     'Garden_sqr_meter_per_person_in_residancy_area',
