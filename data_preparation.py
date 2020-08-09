@@ -4,14 +4,19 @@ import matplotlib.pyplot as plt
 
 
 def main():
+
     df1 = pd.read_excel("Data/2019/2019_bronx.xlsx")
     df1['AREA'] = 'bronx'
+
     df2 = pd.read_excel("Data/2019/2019_brooklyn.xlsx")
     df2['AREA'] = 'brooklyn'
+
     df3 = pd.read_excel("Data/2019/2019_manhattan.xlsx")
     df3['AREA'] = 'manhattan'
+
     df4 = pd.read_excel("Data/2019/2019_queens.xlsx")
     df4['AREA'] = 'queens'
+
     df5 = pd.read_excel("Data/2019/2019_statenisland.xlsx")
     df5['AREA'] = 'statenisland'
 
@@ -41,9 +46,16 @@ def main():
                   'AREA']
     df.drop(df.loc[df['SALE PRICE'] == 0].index, inplace=True)
     df = df.drop(['EASE-MENT', 'APARTMENT NUMBER'], axis=1)
+    df = complete_missing_values(df)
 
     # plot some graph
     plot_some_graph(df)
+    plot_statistic(df)
+
+
+def plot_statistic(df):
+    describe_df = df.describe()
+    print(describe_df)
 
 
 def plot_some_graph(df):
@@ -74,6 +86,15 @@ def plot_some_graph(df):
     ax = plt.gca()
     df.plot(kind='line',x='TOTAL UNITS',y='SALE PRICE',ax=ax)
     plt.show()
+
+
+def complete_missing_values(df: pd.DataFrame):
+    # Complete missing entries with the most common numbers
+    for col in df.columns.values:
+        filler = df[col].mode()[0]
+        df[col].fillna(filler, inplace=True)
+
+    return df
 
 
 if __name__ == '__main__':
