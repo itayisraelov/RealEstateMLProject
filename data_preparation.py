@@ -22,6 +22,7 @@ def main():
 
     frames = [df1, df2, df3, df4, df5]
     df = pd.concat(frames)
+
     df.columns = ['BOROUGH',
                   'NEIGHBORHOOD',
                   'BUILDING CLASS CATEGORY',
@@ -44,12 +45,14 @@ def main():
                   'SALE PRICE',
                   'SALE DATE',
                   'AREA']
+
     df.drop(df.loc[df['SALE PRICE'] == 0].index, inplace=True)
     df = df.drop(['EASE-MENT', 'APARTMENT NUMBER'], axis=1)
+
     df = complete_missing_values(df)
 
-    # plot some graph
     plot_some_graph(df)
+
     plot_statistic(df)
 
 
