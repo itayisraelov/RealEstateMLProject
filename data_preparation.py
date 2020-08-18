@@ -1,6 +1,21 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+from constants import EXCEL_EXTENSION
+
+# def load_data(data_path: str) -> pd.DataFrame:
+# TODO: activate load_excel_from_dir for each directory in the Data folder
+
+
+def load_excel_from_dir(path_to_dir: str) -> pd.DataFrame:
+    excel_files_list = list(filter(lambda file_name: file_name.endswith(EXCEL_EXTENSION), os.listdir(path_to_dir)))
+    df_list = []
+    for file in excel_files_list:
+        df_list.append(pd.read_excel(os.path.join(path_to_dir, file)))
+    x = pd.concat(df_list)
+    return x
+
 
 
 def main():

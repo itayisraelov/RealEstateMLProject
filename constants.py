@@ -1,0 +1,2 @@
+DATA_PATH = "Data"
+EXCEL_EXTENSION = ".xlsx"
