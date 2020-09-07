@@ -1,43 +1,78 @@
-import pandas as pd
-import numpy as np
+import numpy as np  # linear algebra
+import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 from constants import EXCEL_EXTENSION
+from sklearn.model_selection import train_test_split
+from geopy.geocoders import Nominatim
 
-# def load_data(data_path: str) -> pd.DataFrame:
-# TODO: activate load_excel_from_dir for each directory in the Data folder
-
-
-def load_excel_from_dir(path_to_dir: str) -> pd.DataFrame:
-    excel_files_list = list(filter(lambda file_name: file_name.endswith(EXCEL_EXTENSION), os.listdir(path_to_dir)))
-    df_list = []
-    for file in excel_files_list:
-        df_list.append(pd.read_excel(os.path.join(path_to_dir, file)))
-    x = pd.concat(df_list)
-    return x
-
+color = sns.color_palette()
+pd.options.mode.chained_assignment = None  # default='warn'
 
 
 def main():
+    df1, df2, df3, df4, df5 = load_data_from_excel()
 
+    df = feature_engineering(df1, df2, df3, df4, df5)
+
+    # get_some_information_from_data(df)
+
+    df = remove_outliers(df)
+
+    # get_some_information_from_data(df)
+
+    df = complete_missing_values(df)
+
+    # get_some_information_from_data(df)
+
+    # plot_some_graph(df)
+    print(f'Train data has {df.shape[0]} rows and {df.shape[1]} colummns')
+
+    df_train, df_test = train_test_split(df, test_size=0.2, random_state=42, shuffle=True)
+
+
+def get_some_information_from_data(df):
+    print(df.isna().sum())
+    print(f'Train data has {df.shape[0]} rows and {df.shape[1]} colummns')
+    plot_statistic(df)
+
+
+def load_data_from_excel():
     df1 = pd.read_excel("Data/2019/2019_bronx.xlsx")
-    df1['AREA'] = 'bronx'
-
     df2 = pd.read_excel("Data/2019/2019_brooklyn.xlsx")
-    df2['AREA'] = 'brooklyn'
-
     df3 = pd.read_excel("Data/2019/2019_manhattan.xlsx")
-    df3['AREA'] = 'manhattan'
-
     df4 = pd.read_excel("Data/2019/2019_queens.xlsx")
-    df4['AREA'] = 'queens'
-
     df5 = pd.read_excel("Data/2019/2019_statenisland.xlsx")
+    return df1, df2, df3, df4, df5
+
+
+def feature_engineering(df1, df2, df3, df4, df5):
+    df1, df2, df3, df4, df5 = add_area_column(df1, df2, df3, df4, df5)
+    df = data_frame_concat(df1, df2, df3, df4, df5)
+    df = change_columns_name(df)
+    df['FINAL_ADDRESS'] = df['ADDRESS'].apply(lambda x: x + " NYC")
+
+    return df
+
+
+def add_area_column(df1, df2, df3, df4, df5):
+    df1['AREA'] = 'bronx'
+    df2['AREA'] = 'brooklyn'
+    df3['AREA'] = 'manhattan'
+    df4['AREA'] = 'queens'
     df5['AREA'] = 'statenisland'
 
+    return df1, df2, df3, df4, df5
+
+
+def data_frame_concat(df1, df2, df3, df4, df5):
     frames = [df1, df2, df3, df4, df5]
     df = pd.concat(frames)
+    return df
 
+
+def change_columns_name(df):
     df.columns = ['BOROUGH',
                   'NEIGHBORHOOD',
                   'BUILDING CLASS CATEGORY',
@@ -60,15 +95,53 @@ def main():
                   'SALE PRICE',
                   'SALE DATE',
                   'AREA']
+    return df
 
-    df.drop(df.loc[df['SALE PRICE'] == 0].index, inplace=True)
+
+def remove_outliers(df):
     df = df.drop(['EASE-MENT', 'APARTMENT NUMBER'], axis=1)
 
-    df = complete_missing_values(df)
+    df = df[df['SALE PRICE'] < 3e6]
+    df = df[df['SALE PRICE'] > 5000]
 
-    plot_some_graph(df)
+    df = df[df['RESIDENTIAL UNITS'] < 10.0]
 
-    plot_statistic(df)
+    df = df[df['COMMERCIAL UNITS'] < 5.0]
+
+    df = df[df['YEAR BUILT'] > 1860]
+    df = df[df['YEAR BUILT'] <= 2020]
+
+    df = df[df['GROSS SQUARE FEET'] < 4600]
+    df = df[df['GROSS SQUARE FEET'] > 50]
+
+    df = df[df['LAND SQUARE FEET'] > 200]
+    df = df[df['LAND SQUARE FEET'] < 7000]
+
+    llimit = np.percentile(df['ZIP CODE'], 1)
+    df = df[df['ZIP CODE'] > llimit]
+
+    df = df[df['TOTAL UNITS'] < 5]
+    df = df[df['TOTAL UNITS'] > 0]
+
+    df = df[df['LOT'] < 250]
+
+    return df
+
+
+def print_graph_date_vs_price(df):
+    # Create figure and plot space
+    fig, ax = plt.subplots(figsize=(10, 10))
+    # Add x-axis and y-axis
+    ax.bar(df['SALE DATE'].values,
+           df['SALE PRICE'].values,
+           color='purple')
+    # Set title and labels for axes
+    ax.set(xlabel="Date",
+           ylabel="Counts",
+           title="Counts per date")
+    # Rotate tick marks on x-axis
+    plt.setp(ax.get_xticklabels(), rotation=45)
+    plt.show()
 
 
 def plot_statistic(df):
@@ -77,42 +150,168 @@ def plot_statistic(df):
 
 
 def plot_some_graph(df):
-    # area vs price
-    # gca stands for 'get current axis'
-    ax = plt.gca()
-    df.plot(kind='line', x='AREA', y='SALE PRICE', ax=ax)
-    # df.plot(kind='line',x='AREA',y='NEIGHBORHOOD',color='red', ax=ax)
+    int_level = df['AREA'].value_counts()
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(int_level.index, int_level.values, alpha=0.8, color=color[1])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('BOROUGH', fontsize=12)
     plt.show()
 
-    # date vs number of transactions
-    df['SALE DATE'] = pd.to_datetime(df['SALE DATE'], infer_datetime_format=True)
-    plt.clf()
-    df['SALE DATE'].map(lambda d: d.month).plot(kind='hist')
+    plt.figure(figsize=(8,6))
+    plt.scatter(range(df.shape[0]), df['SALE PRICE'].values)
+    plt.xlabel('index', fontsize=12)
+    plt.ylabel('price', fontsize=12)
     plt.show()
 
-    # zip code vs price
-    ax = plt.gca()
-    df.plot(kind='line', x='ZIP CODE', y='SALE PRICE', ax=ax)
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['SALE PRICE'].values, bins=50, kde=True)
+    plt.xlabel('price', fontsize=12)
     plt.show()
 
-    # block(tax)  vs price
-    ax = plt.gca()
-    df.plot(kind='line',x='BLOCK',y='SALE PRICE',ax=ax)
+    int_level = df['TAX CLASS AS OF FINAL ROLL 18/19'].value_counts()
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(int_level.index, int_level.values, alpha=0.8, color=color[4])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('TAX CLASS AS OF FINAL ROLL 18/19', fontsize=12)
     plt.show()
 
-    # total units vs price
-    ax = plt.gca()
-    df.plot(kind='line',x='TOTAL UNITS',y='SALE PRICE',ax=ax)
+    uniqueValues = df['RESIDENTIAL UNITS'].unique()
+    print('Unique elements in column "RESIDENTIAL UNITS" ')
+    print(np.sort(uniqueValues))
+
+    cnt_srs = df['RESIDENTIAL UNITS'].value_counts()
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(cnt_srs.index, cnt_srs.values, alpha=0.8, color=color[0])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('RESIDENTIAL UNITS', fontsize=12)
     plt.show()
+
+    uniqueValues = df['COMMERCIAL UNITS'].unique()
+    print('Unique elements in column "COMMERCIAL UNITS" ')
+    print(np.sort(uniqueValues))
+
+    cnt_srs = df['COMMERCIAL UNITS'].value_counts()
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(cnt_srs.index, cnt_srs.values, alpha=0.8, color=color[2])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('COMMERCIAL UNITS', fontsize=12)
+    plt.show()
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['YEAR BUILT'].values, bins=50, kde=True)
+    plt.xlabel('YEAR BUILT', fontsize=12)
+    plt.show()
+
+    uniqueValues = df['YEAR BUILT'].unique()
+    print('Unique elements in column "YEAR BUILT" ')
+    print(np.sort(uniqueValues))
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['GROSS SQUARE FEET'].values, bins=50, kde=True)
+    plt.xlabel('GROSS SQUARE FEET', fontsize=12)
+    plt.show()
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['LAND SQUARE FEET'].values, bins=50, kde=True)
+    plt.xlabel('LAND SQUARE FEET', fontsize=12)
+    plt.show()
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['BLOCK'].values, bins=50, kde=True)
+    plt.xlabel('BLOCK', fontsize=12)
+    plt.show()
+
+    uniqueValues = df['BLOCK'].unique()
+    print('Unique elements in column "BLOCK" ')
+    print(np.size(np.sort(uniqueValues)))
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['ZIP CODE'].values, bins=50, kde=True)
+    plt.xlabel('ZIP CODE', fontsize=12)
+    plt.show()
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['TOTAL UNITS'].values, bins=50, kde=True)
+    plt.xlabel('TOTAL UNITS', fontsize=12)
+    plt.show()
+
+    print_graph_date_vs_price(df)
+
+    plt.figure(figsize=(8, 6))
+    sns.distplot(df['LOT'].values, bins=50, kde=True)
+    plt.xlabel('LOT', fontsize=12)
+    plt.show()
+
+    int_level = df['BUILDING CLASS CATEGORY'].value_counts()
+
+    plt.figure(figsize=(8,4))
+    sns.barplot(int_level.index, int_level.values, alpha=0.8, color=color[9])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('BUILDING CLASS CATEGORY', fontsize=12)
+    plt.show()
+
+    cnt_srs = df['BUILDING CLASS CATEGORY'].value_counts()
+    print(cnt_srs)
+
+    int_level = df['TAX CLASS AT TIME OF SALE'].value_counts()
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(int_level.index, int_level.values, alpha=0.8, color=color[9])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('TAX CLASS AT TIME OF SALE', fontsize=12)
+    plt.show()
+
+    cnt_srs = df['TAX CLASS AT TIME OF SALE'].value_counts()
+    print(cnt_srs)
+
+    int_level = df['BUILDING CLASS AT TIME OF SALE'].value_counts()
+
+    plt.figure(figsize=(8, 4))
+    sns.barplot(int_level.index, int_level.values, alpha=0.8, color=color[9])
+    plt.ylabel('Number of Occurrences', fontsize=12)
+    plt.xlabel('BUILDING CLASS AT TIME OF SALE', fontsize=12)
+    plt.show()
+
+    cnt_srs = df['BUILDING CLASS AT TIME OF SALE'].value_counts()
+    print(cnt_srs)
 
 
 def complete_missing_values(df: pd.DataFrame):
-    # Complete missing entries with the most common numbers
-    for col in df.columns.values:
-        filler = df[col].mode()[0]
-        df[col].fillna(filler, inplace=True)
-
+    df = df.dropna(how='any', axis=0)
     return df
+
+
+def get_lat(address):
+    geolocator = Nominatim(user_agent="real estate ML project!")
+    location = geolocator.geocode(address + " NYC")
+    if location is not None:
+        return location.latitude
+    else:
+        return 'NF'
+
+
+def get_long(address):
+    geolocator = Nominatim(user_agent="real estate ML project!")
+    location = geolocator.geocode(address + " NYC")
+    if location is not None:
+        return location.longitude
+    else:
+        return 'NF'
+
+
+# def load_data(data_path: str) -> pd.DataFrame:
+# TODO: activate load_excel_from_dir for each directory in the Data folder
+def load_excel_from_dir(path_to_dir: str) -> pd.DataFrame:
+    excel_files_list = list(filter(lambda file_name: file_name.endswith(EXCEL_EXTENSION), os.listdir(path_to_dir)))
+    df_list = []
+    for file in excel_files_list:
+        df_list.append(pd.read_excel(os.path.join(path_to_dir, file)))
+    x = pd.concat(df_list)
+    return x
 
 
 if __name__ == '__main__':

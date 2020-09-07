@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4fbf855b-47e8-4dca-bf63-31741937c838" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_preparation.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_preparation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,22 +29,43 @@
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\itay israelov\Desktop\AI project\ml_project" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.data_preparation">
+    <configuration name="send_email_when_to_late_to_work" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\itay israelov\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/send_email_when_to_late_to_work.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.data_preparation" />
+        <item itemvalue="Python.send_email_when_to_late_to_work" />
       </list>
     </recent_temporary>
   </component>
@@ -56,7 +78,13 @@
       <option name="presentableId" value="Default" />
       <updated>1596791547784</updated>
       <workItem from="1596791548912" duration="3296000" />
-      <workItem from="1596970546998" duration="8084000" />
+      <workItem from="1596970546998" duration="8857000" />
+      <workItem from="1597132275811" duration="1266000" />
+      <workItem from="1597136475438" duration="1816000" />
+      <workItem from="1597736686991" duration="1227000" />
+      <workItem from="1598868691809" duration="1384000" />
+      <workItem from="1599379831106" duration="10441000" />
+      <workItem from="1599462011405" duration="5042000" />
     </task>
     <servers />
   </component>
@@ -73,30 +101,36 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1877" height="667" key="GridCell.Tab.0.bottom" timestamp="1596985413840">
+    <state x="1139" y="412" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597136766581">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="667" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596985413840" />
-    <state width="1877" height="667" key="GridCell.Tab.0.center" timestamp="1596985413840">
+    <state x="1139" y="412" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1597136766581" />
+    <state width="1877" height="561" key="GridCell.Tab.0.bottom" timestamp="1599487666145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="667" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596985413840" />
-    <state width="1877" height="667" key="GridCell.Tab.0.left" timestamp="1596985413840">
+    <state width="1877" height="561" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599487666145" />
+    <state width="1877" height="561" key="GridCell.Tab.0.center" timestamp="1599487666144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="667" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596985413840" />
-    <state width="1877" height="667" key="GridCell.Tab.0.right" timestamp="1596985413840">
+    <state width="1877" height="561" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599487666144" />
+    <state width="1877" height="561" key="GridCell.Tab.0.left" timestamp="1599487666144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="667" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596985413840" />
-    <state x="461" y="165" key="SettingsEditor" timestamp="1596980335514">
+    <state width="1877" height="561" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599487666144" />
+    <state width="1877" height="561" key="GridCell.Tab.0.right" timestamp="1599487666145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1596980335514" />
+    <state width="1877" height="561" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599487666145" />
+    <state x="461" y="165" key="SettingsEditor" timestamp="1599388542133">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1599388542133" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ml_project$data_preparation.coverage" NAME="data_preparation Coverage Results" MODIFIED="1596985413829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ml_project$send_email_when_to_late_to_work.coverage" NAME="send_email_when_to_late_to_work Coverage Results" MODIFIED="1597138190711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ml_project$data_preparation.coverage" NAME="data_preparation Coverage Results" MODIFIED="1599482062650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
