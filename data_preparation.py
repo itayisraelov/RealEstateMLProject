@@ -57,6 +57,8 @@ def first_prediction_using_XGB_Regressor(train, train_target, test, test_target)
     res_pred = xg_reg.predict(test)
     rms = np.sqrt(mean_squared_error(test_target, res_pred))
     print("RMS: %f" % rms)
+    print("xg_reg.feature_importances: ")
+    print(xg_reg.feature_importances_)
 
 
 def first_prediction_using_LGBM_Regressor(train, train_target, test, test_target):
@@ -65,6 +67,8 @@ def first_prediction_using_LGBM_Regressor(train, train_target, test, test_target
     res_pred = lgbm.predict(test)
     rms = np.sqrt(mean_squared_error(test_target, res_pred))
     print("RMS: %f" % rms)
+    print("lgbm.feature_importances: ")
+    print(lgbm.feature_importances_)
 
 
 def first_prediction_using_Random_Forest_Regressor(train, train_target, test, test_target):
@@ -73,6 +77,8 @@ def first_prediction_using_Random_Forest_Regressor(train, train_target, test, te
     res_pred = rf.predict(test)
     rms = np.sqrt(mean_squared_error(test_target, res_pred))
     print("RMS: %f" % rms)
+    print("rf.feature_importances: ")
+    print(rf.feature_importances_)
 
 
 def split_train_test_data(df):
@@ -91,10 +97,10 @@ def normalization(final):
     return final
 
 
-def convert_categories_to_numbers(df_train, df_test):
+def convert_categories_to_numbers(train, test):
     cat = ['NEIGHBORHOOD', 'BUILDING CLASS CATEGORY', 'BUILDING CLASS AS OF FINAL ROLL 18/19', 'ADDRESS',
            'BUILDING CLASS AT TIME OF SALE', 'SALE DATE', 'AREA', 'FINAL_ADDRESS']
-    final = pd.concat([df_train, df_test])
+    final = pd.concat([train, test])
     for col in cat:
         lb = LabelEncoder()
         final[col] = lb.fit_transform(final[col].values)
