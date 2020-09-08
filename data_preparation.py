@@ -6,6 +6,12 @@ import os
 from constants import EXCEL_EXTENSION
 from sklearn.model_selection import train_test_split
 from geopy.geocoders import Nominatim
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MinMaxScaler
+import lightgbm as lgb
+import xgboost as xgb
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error
 
 color = sns.color_palette()
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -24,12 +30,79 @@ def main():
 
     df = complete_missing_values(df)
 
+    train, train_target, test, test_target = split_train_test_data(df)
+
+    final = convert_categories_to_numbers(train, test)
+
+    final = normalization(final)
+
+    train = final[:len(train)]
+    test = final[len(train):]
+
+    first_prediction_using_Random_Forest_Regressor(train, train_target, test, test_target)
+    first_prediction_using_LGBM_Regressor(train, train_target, test, test_target)
+    first_prediction_using_XGB_Regressor(train, train_target, test, test_target)
+
+
     # get_some_information_from_data(df)
 
     # plot_some_graph(df)
     print(f'Train data has {df.shape[0]} rows and {df.shape[1]} colummns')
 
+
+def first_prediction_using_XGB_Regressor(train, train_target, test, test_target):
+    xg_reg = xgb.XGBRegressor(objective='reg:squarederror', colsample_bytree=0.3, learning_rate=0.1,
+                              max_depth=5, alpha=10, n_estimators=10)
+    xg_reg.fit(train, train_target)
+    res_pred = xg_reg.predict(test)
+    rms = np.sqrt(mean_squared_error(test_target, res_pred))
+    print("RMS: %f" % rms)
+
+
+def first_prediction_using_LGBM_Regressor(train, train_target, test, test_target):
+    lgbm = lgb.LGBMRegressor(max_depth=15, num_leaves=40)
+    lgbm.fit(train, train_target)
+    res_pred = lgbm.predict(test)
+    rms = np.sqrt(mean_squared_error(test_target, res_pred))
+    print("RMS: %f" % rms)
+
+
+def first_prediction_using_Random_Forest_Regressor(train, train_target, test, test_target):
+    rf = RandomForestRegressor(n_estimators=300, verbose=True, max_depth=10, n_jobs=-1)
+    rf.fit(train, train_target)
+    res_pred = rf.predict(test)
+    rms = np.sqrt(mean_squared_error(test_target, res_pred))
+    print("RMS: %f" % rms)
+
+
+def split_train_test_data(df):
     df_train, df_test = train_test_split(df, test_size=0.2, random_state=42, shuffle=True)
+    train_target = df_train['SALE PRICE']
+    train = df_train.drop(['SALE PRICE'], axis=1)
+    test_target = df_test['SALE PRICE']
+    test = df_test.drop(['SALE PRICE'], axis=1)
+    return train, train_target, test, test_target
+
+
+def normalization(final):
+    for col in final.columns:
+        minmax = MinMaxScaler()
+        final[col] = minmax.fit_transform(final[col].values.reshape(-1, 1))
+    return final
+
+
+def convert_categories_to_numbers(df_train, df_test):
+    cat = ['NEIGHBORHOOD', 'BUILDING CLASS CATEGORY', 'BUILDING CLASS AS OF FINAL ROLL 18/19', 'ADDRESS',
+           'BUILDING CLASS AT TIME OF SALE', 'SALE DATE', 'AREA', 'FINAL_ADDRESS']
+    final = pd.concat([df_train, df_test])
+    for col in cat:
+        lb = LabelEncoder()
+        final[col] = lb.fit_transform(final[col].values)
+
+    final['TAX CLASS AS OF FINAL ROLL 18/19'] = final['TAX CLASS AS OF FINAL ROLL 18/19']\
+        .map({'2A': 2, '1': 1, '4': 4})
+
+    return final
 
 
 def get_some_information_from_data(df):
