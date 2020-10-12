@@ -1,3 +1,0 @@
-airport, cafe, park, parking, real_estate_agency,
-shopping_mall, gym, synagogue, train_station, university
-school, 
